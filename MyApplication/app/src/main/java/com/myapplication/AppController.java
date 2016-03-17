@@ -1,6 +1,6 @@
 package com.myapplication;
 
-import android.support.multidex.MultiDexApplication;
+import android.app.Application;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by choijinjoo on 2016. 3. 12..
  */
-public class AppController extends MultiDexApplication{
+public class AppController extends Application {
     private static AppController mInstance;
     private Retrofit mRetrofit;
 
