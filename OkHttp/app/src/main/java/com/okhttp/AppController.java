@@ -18,8 +18,6 @@ public class AppController extends Application {
     private OkHttpClient okHttpClient;
     private Gson gson = new Gson();
 
-
-
     public static synchronized AppController getInstance() {
         return mInstance;
     }
@@ -32,6 +30,7 @@ public class AppController extends Application {
     public Gson getGson() {
         return gson;
     }
+
 
     public Call doGetCallback (String parameter){
         okHttpClient = new OkHttpClient();
