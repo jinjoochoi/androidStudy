@@ -2,7 +2,6 @@ package com.okhttp;
 
 import android.app.Application;
 
-import com.google.gson.Gson;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -18,7 +17,7 @@ public class AppController extends Application {
     private static String API_KEY = "76b686c47907e60b569a191afeb561da";
     private static AppController mInstance;
     private OkHttpClient okHttpClient;
-    private Gson gson = new Gson();
+
 
     public static synchronized AppController getInstance() {
         return mInstance;
@@ -27,22 +26,38 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
+
+
     }
 
-    public Gson getGson() {
-        return gson;
-    }
 
-
-    public Call doGetCallback (String parameter){
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-        urlBuilder.addQueryParameter("method","chart.gettoptracks");
+    public Call doGetTopLyricsCallback (){
+        HttpUrl.Builder urlBuilder= HttpUrl.parse(BASE_URL).newBuilder();
         urlBuilder.addQueryParameter("format","json");
         urlBuilder.addQueryParameter("api_key",API_KEY);
-        okHttpClient = new OkHttpClient();
+        urlBuilder.addQueryParameter("method","chart.gettoptracks");
+        String url = urlBuilder.build().toString();
+
         Request request = new Request.Builder()
-                .url(BASE_URL + parameter)
-                .build();
+                .url(url).build();
+        okHttpClient = new OkHttpClient();
+
+        return okHttpClient.newCall(request);
+
+    }
+    public Call doGetSearchLyricsCallback (String track){
+        HttpUrl.Builder urlBuilder= HttpUrl.parse(BASE_URL).newBuilder();
+        urlBuilder.addQueryParameter("format","json");
+        urlBuilder.addQueryParameter("api_key",API_KEY);
+        urlBuilder.addQueryParameter("method","track.search");
+        urlBuilder.addQueryParameter("track",track);
+        String url = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(url).build();
+        okHttpClient = new OkHttpClient();
+
         return okHttpClient.newCall(request);
 
     }
