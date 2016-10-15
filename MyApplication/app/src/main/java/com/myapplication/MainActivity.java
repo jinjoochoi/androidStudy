@@ -1,12 +1,12 @@
 package com.myapplication;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.myapplication.Model.Image;
 import com.myapplication.Model.ResultTrackResponse;
@@ -14,6 +14,7 @@ import com.myapplication.Model.TopTrackResponse;
 import com.myapplication.Model.Track;
 import com.myapplication.Model.Track2;
 import com.myapplication.Realm.RealmArtist;
+import com.myapplication.Realm.RealmCount;
 import com.myapplication.Realm.RealmImage;
 import com.myapplication.Realm.RealmTrack;
 
@@ -24,6 +25,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import retrofit2.Response;
 import rx.Subscriber;
@@ -31,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Bind(R.id.topTrackList)
     RecyclerView topTrackRecyclerView;
@@ -39,10 +41,14 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView resultTrackRecyclerView;
     @Bind(R.id.editText)
     EditText editText;
-
+    @Bind(R.id.txtvCount)
+    TextView txtvCount;
 
     ToptrackAdapter toptrackAdapter;
     ResultTrackAdapter resultTrackAdapter;
+
+    private RealmCount realmCount;
+    private RealmChangeListener<RealmCount> mListener;
 
 
     @Override
@@ -51,7 +57,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        Realm.init(this);
+        mListener = new RealmChangeListener<RealmCount>() {
+            @Override
+            public void onChange(RealmCount count) {
+                txtvCount.setText(String.valueOf(count.getCount()));
+            }
+        };
+
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmCount = realm.where(RealmCount.class).findFirst();
+                if (realmCount == null) {
+                    realmCount = realm.createObject(RealmCount.class, 1);
+                    realmCount.setCount(0);
+                }
+                txtvCount.setText(String.valueOf(realmCount.getCount()));
+                realmCount.addChangeListener(mListener);
+            }
+        });
+
 
         toptrackAdapter = new ToptrackAdapter(this);
         topTrackRecyclerView.setAdapter(toptrackAdapter);
@@ -77,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         track.put("api_key", "76b686c47907e60b569a191afeb561da");
         AppController.getInstance().getLastFmService().getTopTracks(track)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Response<TopTrackResponse>, ArrayList<Track>>() {
                     @Override
                     public ArrayList<Track> call(Response<TopTrackResponse> topTrackResponseResponse) {
@@ -93,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -105,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-        }
-
+    }
 
 
     //TODO response.isSuccessfull을 어느시점에 두는게 좋을 지 ?
@@ -149,17 +173,17 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-//TODO writeTrackToRealm, writeTrack2ToRealm 합치기
+    //TODO writeTrackToRealm, writeTrack2ToRealm 합치기
     public ArrayList<Track2> writeTrack2ToRealm(final Response<ResultTrackResponse> response) {
-        Realm realm = Realm.getDefaultInstance();
+
         final ArrayList<Track2> trackList = response.body().getResults().getTrackMatches().getTrack();
 
-        realm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 deleteInRealmImage(realm);
 
-                for(Track2 track : trackList) {
+                for (Track2 track : trackList) {
                     RealmTrack realmTrack = findInRealm(realm, track.getUrl());
                     if (realmTrack == null) {
                         realmTrack = realm.createObject(RealmTrack.class, track.getUrl());
@@ -186,16 +210,16 @@ public class MainActivity extends AppCompatActivity {
         return trackList;
 
     }
+
     public ArrayList<Track> writeTrackToRealm(final Response<TopTrackResponse> response) {
-        Realm realm = Realm.getDefaultInstance();
         final ArrayList<Track> trackList = response.body().getTracks().getTrackList();
 
-        realm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 deleteInRealmImage(realm);
 
-                for(Track track : trackList) {
+                for (Track track : trackList) {
                     RealmTrack realmTrack = findInRealm(realm, track.getUrl());
                     if (realmTrack == null) {
                         realmTrack = realm.createObject(RealmTrack.class, track.getUrl());
@@ -222,12 +246,13 @@ public class MainActivity extends AppCompatActivity {
         return trackList;
 
     }
-//    public RealmTrack readFromTrack(String url){
+
+    //    public RealmTrack readFromTrack(String url){
 //        Realm realm = Realm.getDefaultInstance();
 //        RealmTrack realmTrack = findInRealm(realm,url);
 //
 //    }
-    private boolean deleteInRealmImage(Realm realm){
+    private boolean deleteInRealmImage(Realm realm) {
         return realm.where(RealmImage.class).findAll().deleteAllFromRealm();
     }
 
@@ -250,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
             track.put("track", editText.getText().toString());
             AppController.getInstance().getLastFmService().getResultTracks(track)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .map(new Func1<Response<ResultTrackResponse>, ArrayList<Track2>>() {
                         @Override
                         public ArrayList<Track2> call(Response<ResultTrackResponse> resultTrackResponseResponse) {
@@ -302,6 +327,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realmCount.removeChangeListener(mListener);
+
     }
 }
 

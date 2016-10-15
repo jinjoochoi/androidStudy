@@ -1,8 +1,8 @@
 package com.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.myapplication.Model.Track;
-
 
 import java.util.ArrayList;
 
@@ -54,6 +53,13 @@ public class ToptrackAdapter extends RecyclerView.Adapter<ToptrackAdapter.ViewHo
         Glide.with(mContext).load(track.getImage().get(1).getText()).fitCenter().into(holder.imageView);
         holder.track.setText(track.getName());
         holder.artist.setText(track.getArtist().getName());
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,NewActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 

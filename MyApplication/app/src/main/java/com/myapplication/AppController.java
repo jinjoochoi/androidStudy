@@ -21,6 +21,7 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
     }
     public Retrofit getmRetrofit(){
         if(mRetrofit == null){
@@ -36,6 +37,7 @@ public class AppController extends Application {
     public LastFmService getLastFmService(){
         return getmRetrofit().create(LastFmService.class);
     }
+
 
 
 
