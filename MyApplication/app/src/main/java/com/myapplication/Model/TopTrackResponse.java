@@ -6,6 +6,7 @@ package com.myapplication.Model;
 public class TopTrackResponse {
     TopTracks tracks;
 
+
     public TopTracks getTracks() {
         return tracks;
     }

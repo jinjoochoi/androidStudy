@@ -3,12 +3,13 @@ package com.myapplication.Model;
 import java.util.ArrayList;
 
 /**
- * Created by choijinjoo on 2016. 3. 13..
+ * Created by choijinjoo on 2016. 3. 12..
  */
 public class Track2 {
     String name;
     String artist;
     ArrayList<Image> image;
+    String url;
 
     public String getName() {
         return name;
@@ -32,5 +33,13 @@ public class Track2 {
 
     public void setImage(ArrayList<Image> image) {
         this.image = image;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

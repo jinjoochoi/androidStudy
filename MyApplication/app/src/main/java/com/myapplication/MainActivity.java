@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.myapplication.Model.Image;
+import com.myapplication.Model.ResultTrackResponse;
 import com.myapplication.Model.TopTrackResponse;
 import com.myapplication.Model.Track;
+import com.myapplication.Model.Track2;
 import com.myapplication.Realm.RealmArtist;
 import com.myapplication.Realm.RealmImage;
 import com.myapplication.Realm.RealmTrack;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmList;
 import retrofit2.Response;
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 .map(new Func1<Response<TopTrackResponse>, ArrayList<Track>>() {
                     @Override
                     public ArrayList<Track> call(Response<TopTrackResponse> topTrackResponseResponse) {
-                        return writeToRealm(topTrackResponseResponse);
+                        return writeTrackToRealm(topTrackResponseResponse);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -108,7 +111,82 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO response.isSuccessfull을 어느시점에 두는게 좋을 지 ?
 
-    public ArrayList<Track> writeToRealm(final Response<TopTrackResponse> response) {
+//    public ArrayList<Track> writeToRealm(final Response<? extends TrackResponse> response) {
+//        Realm realm = Realm.getDefaultInstance();
+//        response.body().getTrackList();
+//        final ArrayList<Track> trackList = response.body().getTrackList();
+//
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                deleteInRealmImage(realm);
+//
+//                for(Track track : trackList) {
+//                    RealmTrack realmTrack = findInRealm(realm, track.getUrl());
+//                    if (realmTrack == null) {
+//                        realmTrack = realm.createObject(RealmTrack.class, track.getUrl());
+//                    }
+//                    realmTrack.setName(track.getName());
+//
+//                    RealmArtist realmArtist = realm.createObject(RealmArtist.class);
+//                    realmArtist.setName(track.getArtist().getName());
+//
+//                    realmTrack.setArtist(realmArtist);
+//
+//                    RealmList<RealmImage> realmImages = realmTrack.getImage();
+//                    for (Image image : track.getImage()) {
+//                        RealmImage realmImage = realm.createObject(RealmImage.class);
+//                        realmImage.setSize(image.getSize());
+//                        realmImage.setText(image.getText());
+//                        realmImages.add(realmImage);
+//                    }
+//                    realmTrack.setImage(realmImages);
+//                }
+//
+//            }
+//        });
+//        return trackList;
+//
+//    }
+
+//TODO writeTrackToRealm, writeTrack2ToRealm 합치기
+    public ArrayList<Track2> writeTrack2ToRealm(final Response<ResultTrackResponse> response) {
+        Realm realm = Realm.getDefaultInstance();
+        final ArrayList<Track2> trackList = response.body().getResults().getTrackMatches().getTrack();
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                deleteInRealmImage(realm);
+
+                for(Track2 track : trackList) {
+                    RealmTrack realmTrack = findInRealm(realm, track.getUrl());
+                    if (realmTrack == null) {
+                        realmTrack = realm.createObject(RealmTrack.class, track.getUrl());
+                    }
+                    realmTrack.setName(track.getName());
+
+                    RealmArtist realmArtist = realm.createObject(RealmArtist.class);
+                    realmArtist.setName(track.getArtist());
+
+                    realmTrack.setArtist(realmArtist);
+
+                    RealmList<RealmImage> realmImages = realmTrack.getImage();
+                    for (Image image : track.getImage()) {
+                        RealmImage realmImage = realm.createObject(RealmImage.class);
+                        realmImage.setSize(image.getSize());
+                        realmImage.setText(image.getText());
+                        realmImages.add(realmImage);
+                    }
+                    realmTrack.setImage(realmImages);
+                }
+
+            }
+        });
+        return trackList;
+
+    }
+    public ArrayList<Track> writeTrackToRealm(final Response<TopTrackResponse> response) {
         Realm realm = Realm.getDefaultInstance();
         final ArrayList<Track> trackList = response.body().getTracks().getTrackList();
 
@@ -161,35 +239,48 @@ public class MainActivity extends AppCompatActivity {
         return editText.getText().toString().trim().length() == 0;
     }
 
-//    @OnClick(R.id.searchbutton)
-//    public void searchButtonClicked() {
-//        if (!isEmpty(editText)) {
-//            resultTrackAdapter.clearItem();
-//            HashMap<String, String> track = new HashMap<>();
-//            track.put("method", "track.search");
-//            track.put("format", "json");
-//            track.put("api_key", "76b686c47907e60b569a191afeb561da");
-//            track.put("track", editText.getText().toString());
-//            AppController.getInstance().getLastFmService().getResultTracks(track).
-//                    enqueue(new Callback<ResultTrackResponse>() {
-//                        @Override
-//                        public void onResponse(Call<ResultTrackResponse> call, Response<ResultTrackResponse> response) {
-//                            if (response.isSuccess()) {
-//                                for (Track2 item : response.body().getResults().getTrackMatches().getTrack()) {
-//                                    resultTrackAdapter.addItem(item);
-//                                }
-//                                resultTrackAdapter.notifyDataSetChanged();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<ResultTrackResponse> call, Throwable t) {
-//
-//                        }
-//                    });
-//        }
-//
-//    }
+    @OnClick(R.id.searchbutton)
+    public void searchButtonClicked() {
+        if (!isEmpty(editText)) {
+            resultTrackAdapter.clearItem();
+            HashMap<String, String> track = new HashMap<>();
+            track.put("method", "track.search");
+            track.put("format", "json");
+            track.put("api_key", "76b686c47907e60b569a191afeb561da");
+            track.put("track", editText.getText().toString());
+            AppController.getInstance().getLastFmService().getResultTracks(track)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.computation())
+                    .map(new Func1<Response<ResultTrackResponse>, ArrayList<Track2>>() {
+                        @Override
+                        public ArrayList<Track2> call(Response<ResultTrackResponse> resultTrackResponseResponse) {
+                            return writeTrack2ToRealm(resultTrackResponseResponse);
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<ArrayList<Track2>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(ArrayList<Track2> tracks) {
+                            for (Track2 track : tracks) {
+                                resultTrackAdapter.addItem(track);
+                            }
+                            resultTrackAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
