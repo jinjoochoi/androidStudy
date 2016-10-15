@@ -9,6 +9,8 @@ public class Track {
     String name;
     Artist artist;
     ArrayList<Image> image;
+    String url;
+
     public String getName() {
         return name;
     }
@@ -31,5 +33,13 @@ public class Track {
 
     public void setImage(ArrayList<Image> image) {
         this.image = image;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

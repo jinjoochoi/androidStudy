@@ -3,6 +3,7 @@ package com.myapplication;
 import android.app.Application;
 
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -26,6 +27,7 @@ public class AppController extends Application {
             mRetrofit = new Retrofit.Builder()
                     .baseUrl("http://ws.audioscrobbler.com/")
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
 
         }
