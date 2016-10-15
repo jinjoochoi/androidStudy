@@ -107,14 +107,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     //TODO response.isSuccessfull을 어느시점에 두는게 좋을 지 ?
-    //TODO RealmImage 매번 초기화
 
     public ArrayList<Track> writeToRealm(final Response<TopTrackResponse> response) {
         Realm realm = Realm.getDefaultInstance();
         final ArrayList<Track> trackList = response.body().getTracks().getTrackList();
+
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                deleteInRealmImage(realm);
+
                 for(Track track : trackList) {
                     RealmTrack realmTrack = findInRealm(realm, track.getUrl());
                     if (realmTrack == null) {
@@ -147,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
 //        RealmTrack realmTrack = findInRealm(realm,url);
 //
 //    }
+    private boolean deleteInRealmImage(Realm realm){
+        return realm.where(RealmImage.class).findAll().deleteAllFromRealm();
+    }
 
     private RealmTrack findInRealm(Realm realm, String url) {
         return realm.where(RealmTrack.class).equalTo("url", url).findFirst();
