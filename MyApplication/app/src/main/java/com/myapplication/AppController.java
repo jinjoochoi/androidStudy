@@ -2,6 +2,8 @@ package com.myapplication;
 
 import android.app.Application;
 
+import com.myapplication.track.api.LastFmApi;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -34,8 +36,8 @@ public class AppController extends Application {
         }
         return mRetrofit;
     }
-    public LastFmService getLastFmService(){
-        return getmRetrofit().create(LastFmService.class);
+    public LastFmApi getLastFmService(){
+        return getmRetrofit().create(LastFmApi.class);
     }
 
 

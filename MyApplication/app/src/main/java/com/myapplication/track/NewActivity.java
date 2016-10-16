@@ -1,10 +1,12 @@
-package com.myapplication;
+package com.myapplication.track;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.myapplication.BaseActivity;
+import com.myapplication.R;
 import com.myapplication.Realm.RealmCount;
 
 import butterknife.Bind;

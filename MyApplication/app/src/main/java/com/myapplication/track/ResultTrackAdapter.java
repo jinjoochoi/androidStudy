@@ -1,4 +1,4 @@
-package com.myapplication;
+package com.myapplication.track;
 
 /**
  * Created by choijinjoo on 2016. 3. 13..
@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.myapplication.Model.Track2;
+import com.myapplication.track.api.Model.Track2;
+import com.myapplication.R;
 
 import java.util.ArrayList;
 

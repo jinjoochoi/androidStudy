@@ -1,4 +1,4 @@
-package com.myapplication;
+package com.myapplication.track;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,26 +8,29 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.myapplication.Model.Image;
-import com.myapplication.Model.ResultTrackResponse;
-import com.myapplication.Model.TopTrackResponse;
-import com.myapplication.Model.Track;
-import com.myapplication.Model.Track2;
+import com.myapplication.AppController;
+import com.myapplication.BaseActivity;
+import com.myapplication.R;
 import com.myapplication.Realm.RealmArtist;
 import com.myapplication.Realm.RealmCount;
 import com.myapplication.Realm.RealmImage;
 import com.myapplication.Realm.RealmTrack;
+import com.myapplication.track.api.Model.Image;
+import com.myapplication.track.api.Model.ResultTrackResponse;
+import com.myapplication.track.api.Model.TopTrackResponse;
+import com.myapplication.track.api.Model.Track;
+import com.myapplication.track.api.Model.Track2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
-import retrofit2.Response;
+import retrofit2.adapter.rxjava.Result;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -35,13 +38,13 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
-    @Bind(R.id.topTrackList)
+    @BindView(R.id.topTrackList)
     RecyclerView topTrackRecyclerView;
-    @Bind(R.id.resultTrackList)
+    @BindView(R.id.resultTrackList)
     RecyclerView resultTrackRecyclerView;
-    @Bind(R.id.editText)
+    @BindView(R.id.editText)
     EditText editText;
-    @Bind(R.id.txtvCount)
+    @BindView(R.id.txtvCount)
     TextView txtvCount;
 
     ToptrackAdapter toptrackAdapter;
@@ -103,9 +106,9 @@ public class MainActivity extends BaseActivity {
         AppController.getInstance().getLastFmService().getTopTracks(track)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Response<TopTrackResponse>, ArrayList<Track>>() {
+                .map(new Func1<Result<TopTrackResponse>, ArrayList<Track>>() {
                     @Override
-                    public ArrayList<Track> call(Response<TopTrackResponse> topTrackResponseResponse) {
+                    public ArrayList<Track> call(Result<TopTrackResponse> topTrackResponseResponse) {
                         return writeTrackToRealm(topTrackResponseResponse);
                     }
                 })
@@ -174,9 +177,9 @@ public class MainActivity extends BaseActivity {
 //    }
 
     //TODO writeTrackToRealm, writeTrack2ToRealm 합치기
-    public ArrayList<Track2> writeTrack2ToRealm(final Response<ResultTrackResponse> response) {
+    public ArrayList<Track2> writeTrack2ToRealm(final Result<ResultTrackResponse> result) {
 
-        final ArrayList<Track2> trackList = response.body().getResults().getTrackMatches().getTrack();
+        final ArrayList<Track2> trackList = result.response().body().getResults().getTrackMatches().getTrack();
 
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -211,8 +214,8 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    public ArrayList<Track> writeTrackToRealm(final Response<TopTrackResponse> response) {
-        final ArrayList<Track> trackList = response.body().getTracks().getTrackList();
+    public ArrayList<Track> writeTrackToRealm(final Result<TopTrackResponse> result) {
+        final ArrayList<Track> trackList = result.response().body().getTracks().getTrackList();
 
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -276,9 +279,9 @@ public class MainActivity extends BaseActivity {
             AppController.getInstance().getLastFmService().getResultTracks(track)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(new Func1<Response<ResultTrackResponse>, ArrayList<Track2>>() {
+                    .map(new Func1<Result<ResultTrackResponse>, ArrayList<Track2>>() {
                         @Override
-                        public ArrayList<Track2> call(Response<ResultTrackResponse> resultTrackResponseResponse) {
+                        public ArrayList<Track2> call(Result<ResultTrackResponse> resultTrackResponseResponse) {
                             return writeTrack2ToRealm(resultTrackResponseResponse);
                         }
                     })

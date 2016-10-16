@@ -1,4 +1,4 @@
-package com.myapplication;
+package com.myapplication.track;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.myapplication.Model.Track;
+import com.myapplication.track.api.Model.Track;
+import com.myapplication.R;
 
 import java.util.ArrayList;
 

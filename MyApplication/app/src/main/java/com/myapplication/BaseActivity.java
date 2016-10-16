@@ -22,5 +22,9 @@ public class BaseActivity extends AppCompatActivity {
         mRealm = Realm.getInstance(config);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRealm.close();
+    }
 }

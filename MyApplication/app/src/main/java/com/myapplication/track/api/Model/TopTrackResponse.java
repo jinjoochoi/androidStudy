@@ -1,4 +1,4 @@
-package com.myapplication.Model;
+package com.myapplication.track.api.Model;
 
 /**
  * Created by choijinjoo on 2016. 3. 12..

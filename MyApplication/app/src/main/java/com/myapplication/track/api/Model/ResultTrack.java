@@ -1,4 +1,4 @@
-package com.myapplication.Model;
+package com.myapplication.track.api.Model;
 
 import com.google.gson.annotations.SerializedName;
 
