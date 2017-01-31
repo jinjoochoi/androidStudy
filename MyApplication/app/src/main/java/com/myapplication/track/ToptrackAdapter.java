@@ -1,8 +1,7 @@
-package com.myapplication;
+package com.myapplication.track;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,35 +9,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxrelay.PublishRelay;
 import com.myapplication.Model.Track;
-
+import com.myapplication.R;
+import com.myapplication.base.BaseAdapter;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by choijinjoo on 2016. 3. 12..
  */
-public class ToptrackAdapter extends RecyclerView.Adapter<ToptrackAdapter.ViewHolder> {
-    protected final Context mContext;
-    ArrayList<Track> mItem;
+public class ToptrackAdapter extends BaseAdapter<Track, ToptrackAdapter.ViewHolder> {
 
+    PublishRelay<Track> trackClickedRelay;
 
-    public ToptrackAdapter(Context context) {
-        mContext = context;
-        mItem = new ArrayList<>();
-    }
-    public void addItem(Track item){
-        mItem.add(item);
-    }
-    public void clearItem() {
-        int count = mItem.size();
-        if (count > 0) {
-            mItem.clear();
-            notifyDataSetChanged();
-        }
+    public ToptrackAdapter(Context context, ArrayList<Track> data, PublishRelay<Track> trackClickedRelay) {
+        super(context, data);
+        this.trackClickedRelay = trackClickedRelay;
     }
 
     @Override
@@ -50,29 +41,28 @@ public class ToptrackAdapter extends RecyclerView.Adapter<ToptrackAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Track track = mItem.get(position);
+        final Track track = mItems.get(position);
         Glide.with(mContext).load(track.getImage().get(1).getText()).fitCenter().into(holder.imageView);
         holder.track.setText(track.getName());
         holder.artist.setText(track.getArtist().getName());
 
     }
 
-    @Override
-    public int getItemCount() {
-        return mItem.size();
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image)
+        @BindView(R.id.image)
         ImageView imageView;
-        @Bind(R.id.track)
+        @BindView(R.id.track)
         TextView track;
-        @Bind(R.id.artist)
+        @BindView(R.id.artist)
         TextView artist;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
+        }
+        @OnClick(R.id.containerTrack) void onTrackClicked(){
+            trackClickedRelay.call(mItems.get(getAdapterPosition()));
         }
     }
 }

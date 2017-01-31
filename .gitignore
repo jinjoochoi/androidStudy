@@ -1,0 +1,13 @@
+*.iml
+*.iws
+*.ipr
+.gradle
+.idea
+local.properties
+.DS_Store
+build
+*/build/
+/captures
+app/app-release.apk
+fabric.properties
+Thumbs.db

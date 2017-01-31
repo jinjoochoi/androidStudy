@@ -1,4 +1,4 @@
-package com.myapplication;
+package com.myapplication.track;
 
 /**
  * Created by choijinjoo on 2016. 3. 13..
@@ -14,10 +14,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.myapplication.Model.Track2;
+import com.myapplication.R;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -33,17 +34,6 @@ public class ResultTrackAdapter extends RecyclerView.Adapter<ResultTrackAdapter.
         mContext = context;
         mItem = new ArrayList<>();
     }
-    public void addItem(Track2 item){
-        mItem.add(item);
-    }
-    public void clearItem() {
-        int count = mItem.size();
-        if (count > 0) {
-            mItem.clear();
-            notifyDataSetChanged();
-        }
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -66,11 +56,11 @@ public class ResultTrackAdapter extends RecyclerView.Adapter<ResultTrackAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image)
+        @BindView(R.id.image)
         ImageView imageView;
-        @Bind(R.id.track)
+        @BindView(R.id.track)
         TextView track;
-        @Bind(R.id.artist)
+        @BindView(R.id.artist)
         TextView artist;
 
         public ViewHolder(View itemView) {

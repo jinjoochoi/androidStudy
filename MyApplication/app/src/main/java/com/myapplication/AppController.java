@@ -2,6 +2,8 @@ package com.myapplication;
 
 import android.app.Application;
 
+import com.myapplication.track.LastFmService;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

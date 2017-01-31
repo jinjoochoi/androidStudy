@@ -1,42 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:layout_margin="10dp">
+    tools:context=".track.MainActivity">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Top Tracks"
         android:textSize="18dp"
-        android:textStyle="bold"/>
-    <android.support.v7.widget.RecyclerView
+        android:textStyle="bold" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:id="@+id/topTrackList"/>
+        android:layout_height="120dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/topTrackList"
+            android:layout_width="match_parent"
+            android:layout_height="120dp" />
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_height="50dp" />
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <EditText
+            android:id="@+id/editText"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:hint="노래 제목"
-            android:id="@+id/editText"
-            />
+            android:hint="노래 제목" />
+
         <ImageView
+            android:id="@+id/searchbutton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_search"
-            android:id="@+id/searchbutton" />
+            android:src="@android:drawable/ic_menu_search" />
     </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/resultTrackList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/resultTrackList"/>
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>
