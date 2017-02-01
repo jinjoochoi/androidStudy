@@ -105,7 +105,7 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
                     @Override
                     public void onNext(Void aVoid) {
                         Log.d("onNext", "onNext");
-                        trackNetworkManager.refresh();
+                        trackNetworkManager.refresh().call(null);
 
                     }
                 }));

@@ -124,8 +124,8 @@ public class TrackNetworkManager {
     }
 
 
-    void refresh() {
-        refreshRelay.call(null);
+    PublishRelay<Void> refresh() {
+        return refreshRelay;
     }
 
     void teardown() {
