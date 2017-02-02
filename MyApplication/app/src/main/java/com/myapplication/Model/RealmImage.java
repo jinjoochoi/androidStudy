@@ -2,10 +2,12 @@ package com.myapplication.Model;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+
 /**
  * Created by choijinjoo on 2016. 3. 12..
  */
-public class Image {
+public class RealmImage extends RealmObject{
     @SerializedName("#text")
     String text;
     String size;

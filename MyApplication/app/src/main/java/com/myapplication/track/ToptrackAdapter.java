@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxrelay.PublishRelay;
-import com.myapplication.Model.Track;
+import com.myapplication.Model.RealmTrack;
 import com.myapplication.R;
 import com.myapplication.base.BaseAdapter;
 
@@ -23,11 +23,11 @@ import butterknife.OnClick;
 /**
  * Created by choijinjoo on 2016. 3. 12..
  */
-public class ToptrackAdapter extends BaseAdapter<Track, ToptrackAdapter.ViewHolder> {
+public class ToptrackAdapter extends BaseAdapter<RealmTrack, ToptrackAdapter.ViewHolder> {
 
-    PublishRelay<Track> trackClickedRelay;
+    PublishRelay<RealmTrack> trackClickedRelay;
 
-    public ToptrackAdapter(Context context, ArrayList<Track> data, PublishRelay<Track> trackClickedRelay) {
+    public ToptrackAdapter(Context context, ArrayList<RealmTrack> data, PublishRelay<RealmTrack> trackClickedRelay) {
         super(context, data);
         this.trackClickedRelay = trackClickedRelay;
     }
@@ -41,7 +41,7 @@ public class ToptrackAdapter extends BaseAdapter<Track, ToptrackAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Track track = mItems.get(position);
+        final RealmTrack track = mItems.get(position);
         Glide.with(mContext).load(track.getImage().get(1).getText()).fitCenter().into(holder.imageView);
         holder.track.setText(track.getName());
         holder.artist.setText(track.getArtist().getName());

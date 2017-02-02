@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Track2 {
     String name;
     String artist;
-    ArrayList<Image> image;
+    ArrayList<RealmImage> image;
 
     public String getName() {
         return name;
@@ -26,11 +26,11 @@ public class Track2 {
         this.artist = artist;
     }
 
-    public ArrayList<Image> getImage() {
+    public ArrayList<RealmImage> getImage() {
         return image;
     }
 
-    public void setImage(ArrayList<Image> image) {
+    public void setImage(ArrayList<RealmImage> image) {
         this.image = image;
     }
 }

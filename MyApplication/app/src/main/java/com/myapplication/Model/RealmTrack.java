@@ -1,14 +1,15 @@
 package com.myapplication.Model;
 
-import java.util.ArrayList;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
  * Created by choijinjoo on 2016. 3. 12..
  */
-public class Track {
+public class RealmTrack extends RealmObject{
     String name;
     Artist artist;
-    ArrayList<Image> image;
+    RealmList<RealmImage> image;
     public String getName() {
         return name;
     }
@@ -25,11 +26,11 @@ public class Track {
         this.artist = artist;
     }
 
-    public ArrayList<Image> getImage() {
+    public RealmList<RealmImage> getImage() {
         return image;
     }
 
-    public void setImage(ArrayList<Image> image) {
+    public void setImage(RealmList<RealmImage> image) {
         this.image = image;
     }
 }

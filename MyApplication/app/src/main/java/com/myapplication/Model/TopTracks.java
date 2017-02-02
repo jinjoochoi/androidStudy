@@ -6,13 +6,13 @@ import java.util.ArrayList;
  * Created by choijinjoo on 2016. 3. 12..
  */
 public class TopTracks {
-    ArrayList<Track> track;
+    ArrayList<RealmTrack> track;
 
-    public ArrayList<Track> getTrackList() {
+    public ArrayList<RealmTrack> getTrackList() {
         return track;
     }
 
-    public void setTrackList(ArrayList<Track> trackList) {
+    public void setTrackList(ArrayList<RealmTrack> trackList) {
         this.track = trackList;
     }
 }

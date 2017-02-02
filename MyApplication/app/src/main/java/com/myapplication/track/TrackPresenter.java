@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.myapplication.Model.LoadingState;
-import com.myapplication.Model.Track;
+import com.myapplication.Model.RealmTrack;
 import com.myapplication.base.BasePresenter;
 import com.myapplication.base.PresenterView;
 
@@ -36,10 +36,10 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
         trackNetworkManager.setup();
 
         addToAutoUnsubscribe(Observable.combineLatest(trackNetworkManager.onLoadingStateChanged(),
-                trackNetworkManager.onDataChanged().startWith(new ArrayList<Track>()),
-                new Func2<LoadingState, List<Track>, LoadingStateWithData>() {
+                trackNetworkManager.onDataChanged().startWith(new ArrayList<RealmTrack>()),
+                new Func2<LoadingState, List<RealmTrack>, LoadingStateWithData>() {
                     @Override
-                    public LoadingStateWithData call(LoadingState loadingState, List<Track> tracks) {
+                    public LoadingStateWithData call(LoadingState loadingState, List<RealmTrack> tracks) {
                         return new LoadingStateWithData(loadingState, tracks);
                     }
                 })
@@ -59,7 +59,7 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
                     @Override
                     public void onNext(LoadingStateWithData loadingStateWithData) {
                         final LoadingState loadingState = loadingStateWithData.loadingState;
-                        final List<Track> data = loadingStateWithData.getTracks();
+                        final List<RealmTrack> data = loadingStateWithData.getTracks();
 
                         if (loadingState == LoadingState.LOADING) {
                             if (data == null) {
@@ -109,9 +109,9 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
 
                     }
                 }));
-        addToAutoUnsubscribe(view.onTrackClicked().subscribe(new Action1<Track>() {
+        addToAutoUnsubscribe(view.onTrackClicked().subscribe(new Action1<RealmTrack>() {
             @Override
-            public void call(Track track) {
+            public void call(RealmTrack track) {
                 view.goToTrack(track);
             }
         }));
@@ -137,9 +137,9 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
         Observable<Void> onRefreshAction();
 
         @NonNull
-        Observable<Track> onTrackClicked();
+        Observable<RealmTrack> onTrackClicked();
 
-        void setTracks(@NonNull final List<Track> tracks);
+        void setTracks(@NonNull final List<RealmTrack> tracks);
 
         void showEmpty();
 
@@ -155,23 +155,23 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
 
         void hideIncrementalLoading();
 
-        void goToTrack(@NonNull final Track track);
+        void goToTrack(@NonNull final RealmTrack track);
     }
 
     static class LoadingStateWithData {
         LoadingState loadingState;
-        List<Track> tracks;
+        List<RealmTrack> tracks;
 
 
-        public LoadingStateWithData(@NonNull LoadingState loadingState, List<Track> tracks) {
+        public LoadingStateWithData(@NonNull LoadingState loadingState, List<RealmTrack> tracks) {
             this.loadingState = loadingState;
             this.tracks = tracks;
         }
 
-        static Func2<LoadingState, List<Track>, LoadingStateWithData> create(LoadingState LoadingState, List<Track> tracks) {
-            return new Func2<LoadingState, List<Track>, LoadingStateWithData>() {
+        static Func2<LoadingState, List<RealmTrack>, LoadingStateWithData> create(LoadingState LoadingState, List<RealmTrack> tracks) {
+            return new Func2<LoadingState, List<RealmTrack>, LoadingStateWithData>() {
                 @Override
-                public LoadingStateWithData call(LoadingState loadingState, List<Track> tracks) {
+                public LoadingStateWithData call(LoadingState loadingState, List<RealmTrack> tracks) {
                     return new LoadingStateWithData(loadingState, tracks);
                 }
             };
@@ -181,7 +181,7 @@ public class TrackPresenter extends BasePresenter<TrackPresenter.View> {
             return loadingState;
         }
 
-        public List<Track> getTracks() {
+        public List<RealmTrack> getTracks() {
             return tracks;
         }
     }

@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jakewharton.rxrelay.PublishRelay;
-import com.myapplication.Model.Track;
+import com.myapplication.Model.RealmTrack;
 import com.myapplication.R;
 import com.myapplication.base.BaseActivity;
 import com.myapplication.base.BasePresenter;
@@ -24,7 +24,7 @@ import rx.Observable;
 
 public class MainActivity extends BaseActivity<TrackPresenter.View, TrackComponent> implements TrackPresenter.View {
     private final PublishRelay<Void> refreshRelay = PublishRelay.create();
-    private final PublishRelay<Track> trackClickRelay = PublishRelay.create();
+    private final PublishRelay<RealmTrack> trackClickRelay = PublishRelay.create();
 
     @BindView(R.id.topTrackList)
     RecyclerView topTrackRecyclerView;
@@ -129,12 +129,12 @@ public class MainActivity extends BaseActivity<TrackPresenter.View, TrackCompone
 
     @NonNull
     @Override
-    public Observable<Track> onTrackClicked() {
+    public Observable<RealmTrack> onTrackClicked() {
         return trackClickRelay;
     }
 
     @Override
-    public void setTracks(@NonNull List<Track> tracks) {
+    public void setTracks(@NonNull List<RealmTrack> tracks) {
         toptrackAdapter.clear();
         toptrackAdapter.add(tracks);
     }
@@ -175,7 +175,7 @@ public class MainActivity extends BaseActivity<TrackPresenter.View, TrackCompone
     }
 
     @Override
-    public void goToTrack(@NonNull Track track) {
+    public void goToTrack(@NonNull RealmTrack track) {
         Toast.makeText(this, track.getName(), Toast.LENGTH_SHORT).show();
     }
 

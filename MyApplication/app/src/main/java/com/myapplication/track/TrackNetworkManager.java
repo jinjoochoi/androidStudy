@@ -6,9 +6,10 @@ import android.util.Log;
 import com.jakewharton.rxrelay.PublishRelay;
 import com.myapplication.Model.LoadingState;
 import com.myapplication.Model.TopTrackResponse;
-import com.myapplication.Model.Track;
+import com.myapplication.Model.RealmTrack;
 import com.myapplication.base.Funcs;
 import com.myapplication.base.Results;
+import com.myapplication.track.data.LastFmApi;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,15 +30,15 @@ public class TrackNetworkManager {
     private final PublishRelay<Void> refreshRelay = PublishRelay.create();
 
     private final PublishRelay<LoadingState> loadingStateRelay = PublishRelay.create();
-    private final PublishRelay<List<Track>> tracksRelay = PublishRelay.create();
+    private final PublishRelay<List<RealmTrack>> tracksRelay = PublishRelay.create();
 
     private final CompositeSubscription subscription = new CompositeSubscription();
 
-    private final LastFmService lastFmService;
+    private final LastFmApi lastFmService;
     private final Scheduler ioScheduler;
 
 
-    public TrackNetworkManager(LastFmService lastFmService, Scheduler ioScheduler) {
+    public TrackNetworkManager(LastFmApi lastFmService, Scheduler ioScheduler) {
         this.lastFmService = lastFmService;
         this.ioScheduler = ioScheduler;
     }
@@ -48,7 +49,7 @@ public class TrackNetworkManager {
     }
 
     @NonNull
-    PublishRelay<List<Track>> onDataChanged() {
+    PublishRelay<List<RealmTrack>> onDataChanged() {
         return tracksRelay;
     }
 
